@@ -1,4 +1,5 @@
 import { load } from 'jsr:@std/dotenv'
+import { Template } from 'jsr:@flashcard/core'
 import { fromTSV, toAPKG as toAPKG } from 'jsr:@flashcard/adapters'
 import { generateTranslations, generateTTS } from 'jsr:@flashcard/utils'
 // import * as OpenCC from 'npm:opencc-js';
@@ -15,16 +16,17 @@ const resp = Deno.readTextFileSync('./hsk3.0-band-1.tsv')
 const deck = fromTSV(resp, {
   sortField: 'No',
   meta: {
-    watch: ['No', 'Simplified', 'Pinyin', 'English'],
     id: 'hsk3.0-band-1',
     name: 'HSK Band 1',
     desc: 'Chinese flashcards for the HSK test',
   },
 })
 
-deck.addTemplate('Reading', '<h1>{{Traditional}}</h1>', '<h1>{{English}} ({{Pinyin}})</h1><br/> {{Audio}}<h1> {{Traditional}}</h1>')
-deck.addTemplate('Speaking', '<h1>{{English}}</h1>', '<h1>{{Traditional}} ({{Pinyin}})</h1><br/> {{Audio}}')
-deck.addTemplate('Listening', '{{Audio}}', '<h1>{{Traditional}} ({{Pinyin}})</h1><br/><h1> {{English}}</h1>')
+deck.templates = [
+  new Template('HSK-Reading', '<h1>{{Traditional}}</h1>', '<h1>{{English}} ({{Pinyin}})</h1><br/> {{Audio}}<h1> {{Traditional}}</h1>'),
+  new Template('HSK-Speaking', '<h1>{{English}}</h1>', '<h1>{{Traditional}} ({{Pinyin}})</h1><br/> {{Audio}}'),
+  new Template('HSK-Listening', '{{Audio}}', '<h1>{{Traditional}} ({{Pinyin}})</h1><br/><h1> {{English}}</h1>')
+]
 
 // Use if need to convert from Simplified to Trad
 // const converter = OpenCC.Converter({ from: 'cn', to: 'hk' });
